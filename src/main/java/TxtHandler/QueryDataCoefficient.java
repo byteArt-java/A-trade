@@ -1,3 +1,5 @@
+package TxtHandler;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -7,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QueryDataCoefficient {
-    public static Map<String,String> link = new HashMap<>();
+    static Map<String,String> link = new HashMap<>();
 
 
-    public static float getCoefficient(String codeContractShort){
+    static float getCoefficient(String codeContractShort){
         addLink();
 
         Document doc = null;

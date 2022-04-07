@@ -13,6 +13,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jrt-fs" level="project" />
     <orderEntry type="library" name="org.jsoup:jsoup:1.14.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.20" level="project" />
+    <orderEntry type="library" name="lombok-1.18.20" level="project" />
   </component>
 </module>

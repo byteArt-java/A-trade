@@ -1,3 +1,4 @@
+package TxtHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -5,7 +6,7 @@ import java.util.Map;
 //Этот класс отвечает за правильный расчет коэффициентов которые умножаются на полученную прибыль
 public class RateInstrumentHandler {
 
-    protected static Map<String,Float> addRateInstrument(String codeContract){
+    static Map<String,Float> addRateInstrument(String codeContract){
         Map<String,Float> map = new HashMap<>();
 
         if (codeContract.toUpperCase().equals("RI")){

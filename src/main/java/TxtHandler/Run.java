@@ -1,21 +1,11 @@
+package TxtHandler;
+
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Run extends RateInstrumentHandler{
-
-    private static final String pathFileBoot = "F://Фондовый рынок/A-Trade/BootFromJavaDeals.txt";
-    private static final String pathFileDDEServer = "F://Фондовый рынок/A-Trade/pathFileDDEServer.txt";
-    //путь к файлу в кот. находится данные с Quik DDESERVER
-
-
-    private static List<Contract> bootContractList = new ArrayList<>();//здесь хранятся все загруж закрытые сделки
-    private static Map<String, Contract> tempContractMap = new HashMap<>();//здесь хранятся незакрытые времен сделки
-    private static Map<String,Float> rateInstrument = new HashMap<>();//на какой коэф умножать
-    private static final String pathFileReportBroker = "F://Фондовый рынок//A-Trade//Все сделки из отчета Брокера по 28Декабря 2021года.txt";//путь к файлу в кот. находится данные и личного журнала сделок
-    private static final String pathFileIdealDeal = "F://Фондовый рынок//A-Trade//3.txt";//путь к файлу в кот. находится данные и личного журнала сделок
-    private static int strokesNumber = 0;//счетчик считывание строки метода
+public class Run extends ResourcesStatic{
 
     public static void main(String[] args) throws ParseException, IOException{
         long start = System.currentTimeMillis();
@@ -25,19 +15,19 @@ public class Run extends RateInstrumentHandler{
         // Дата указана для того, чтобы помечать сделки проведенные по Стратегии(Идеальная сделка)
         loadDealsFromDDEServer("09.03.2022 07:00:00","SI",isZeroYield);
 
-//        addContractReportBroker(pathFileReportBroker);//загрузка сделок из Брокерского отчета
+        addContractReportBroker(pathFileReportBroker);//загрузка сделок из Брокерского отчета
 //
-//        yieldsIdealDeal();//доходность по стратегии идеальной сделки
+        yieldsIdealDeal();//доходность по стратегии идеальной сделки
 //
-//        yieldsForPeriodOPENDATE(2022);//доходность за определенный период
-//        yieldsForPeriodOPENDATE(2022,2);//доходность за определенный период
-//        yieldsForPeriodOPENDATE("ED",2021,11);//доходность за определенный период
-//        yieldsForPeriodOPENDATE(2022,"SI","RI","BR","GD","ED");//доходность за определенный период
-//
-//        analyzeAverageDaysBetweenIdealDeal(pathFileIdealDeal);//среднее время между идеальными сделками
-//
-//        analyzeIdealDealBetweenStopFixAndFloatingStop("F://Фондовый рынок/A-Trade//idealDeal.txt",40,
-//                140);//анализ прибыльности при различных параметрах стопа по идеальной стратегии
+        YieldsPeriod.yieldsForPeriodOPENDATE(2022);//доходность за определенный период
+        YieldsPeriod.yieldsForPeriodOPENDATE(2022,2);//доходность за определенный период
+        YieldsPeriod.yieldsForPeriodOPENDATE("ED",2021,11);//доходность за определенный период
+        YieldsPeriod.yieldsForPeriodOPENDATE(2022,"SI","RI","BR","GD","ED");//доходность за определенный период
+
+        analyzeAverageDaysBetweenIdealDeal(pathFileIdealDeal);//среднее время между идеальными сделками
+
+        analyzeIdealDealBetweenStopFixAndFloatingStop("F://Фондовый рынок/A-Trade//idealDeal.txt",40,
+                140);//анализ прибыльности при различных параметрах стопа по идеальной стратегии
 
         long past = System.currentTimeMillis();
         System.out.println("Прошло миллисекунд  = " + (past - start));
@@ -56,7 +46,7 @@ public class Run extends RateInstrumentHandler{
 
                 //Mon Dec 20 14:17:41 MSK 2021
                 String[] partsList = contract.getOpenDate().getTime().toString().split("\\s");
-                partsList[1] = String.valueOf(convertMonth(partsList[1]));
+                partsList[1] = String.valueOf(ConvertMonthToInt.convertMonth(partsList[1]));
                 String s = partsList[1] + " " + partsList[2] + " " + partsList[3] + " " + partsList[5];
                 SimpleDateFormat sdf1 = new SimpleDateFormat("MM dd HH:mm:ss yy");
                 Date dateContract = sdf1.parse(s);
@@ -65,12 +55,12 @@ public class Run extends RateInstrumentHandler{
                 //"Sep 15 11:59:01 MSK 2024 - Dec 15 11:59:00 MSK 2024"
                 String[] partsMap = dataContracts.get(contract.getCodeContract()).split("\\s");
 
-                partsMap[0] = String.valueOf(convertMonth(partsMap[0]));
+                partsMap[0] = String.valueOf(ConvertMonthToInt.convertMonth(partsMap[0]));
                 String sBefore = partsMap[0] + " " + partsMap[1] + " " + partsMap[2] + " " + partsMap[4];
                 SimpleDateFormat sdfBefore = new SimpleDateFormat("MM dd HH:mm:ss yyyy");
                 Date dateBefore = sdfBefore.parse(sBefore);
 
-                partsMap[6] = String.valueOf(convertMonth(partsMap[6]));
+                partsMap[6] = String.valueOf(ConvertMonthToInt.convertMonth(partsMap[6]));
                 String sAfter = partsMap[6] + " " + partsMap[7] + " " + partsMap[8] + " " + partsMap[10];
                 SimpleDateFormat sdfAfter = new SimpleDateFormat("MM dd HH:mm:ss yyyy");
                 Date dateAfter = sdfAfter.parse(sAfter);
@@ -93,64 +83,6 @@ public class Run extends RateInstrumentHandler{
         }
         fileWriter.flush();
         fileWriter.close();
-    }
-
-    //при запуске программы чтение файла, чтобы закинуть в List, уже старые закрытые сделки, записанные до этого программой
-    private static void readInFileData(List<Contract> bootContractList, Map<String, Contract> tempContractMap, String pathFileBoot) throws IOException, ParseException {
-        //  0    1   2   3   4     5     6   7   8     9       10  11  12  13   14     15  16   17  18   19   20
-        //SRH2 ,oD= Sat Dec 20 14:17:41 MSK 21 ,oP= 29407.959 ,cD= Sat Dec 20 14:17:41 MSK 21 ,lCP= 0.0 ,aCP= 0.0
-        //  21   22   23   24  25  26  27   28      29  30   31    32     33     34
-        // ,sD= hour ,bS= buy ,cC= 72 ,tN= 38019.0 ,cC= 72 ,isCF= false ,isOC= true
-        BufferedReader fileReader = new BufferedReader(new FileReader(pathFileBoot));
-        int countLines = 0;
-        while (fileReader.ready()){
-            String[] str = fileReader.readLine().split("\\s");
-
-            String codeContract = str[0];
-            float openPrice = Float.parseFloat(str[9]);
-            float lastClosePrice = Float.parseFloat(str[18]);
-            float averageClosePrice = Float.parseFloat(str[20]);
-            String styleDeal = str[22];
-            String buySell = str[24];
-            int countContract = Integer.parseInt(str[26]);
-            float totalNet = Float.parseFloat(str[28]);
-            int currentCount = Integer.parseInt(str[30]);
-            boolean isClosedFull = Boolean.parseBoolean(str[32]);
-            boolean isOpenedCheck = Boolean.parseBoolean(str[34]);
-
-
-            int openMonth = convertMonth(str[3]);
-            int openNumberDay = Integer.parseInt(str[4]);
-            String openTime = str[5];
-            String openYear = str[7];
-            String strOpen = String.format("%d.%d.%s - %s",openNumberDay,openMonth,openYear,openTime);
-            SimpleDateFormat simpleDateFormatOpen = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-            Date date1 = simpleDateFormatOpen.parse(strOpen);
-            Calendar calendarOpen = new GregorianCalendar();
-            calendarOpen.setTime(date1);
-
-            int closeMonth = convertMonth(str[12]);
-            int closeNumberDay = Integer.parseInt(str[13]);
-            String closeTime = str[14];
-            String closeYear = str[16];
-            String strClose = String.format("%d.%d.%s - %s",closeNumberDay,closeMonth,closeYear,closeTime);
-            SimpleDateFormat simpleDateFormatClose = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-            Date date2 = simpleDateFormatClose.parse(strClose);
-            Calendar calendarClose = new GregorianCalendar();
-            calendarClose.setTime(date2);
-
-            Contract contract = new Contract(codeContract,calendarOpen,openPrice,calendarClose,lastClosePrice,averageClosePrice,
-                    styleDeal,buySell,countContract,totalNet,currentCount,isClosedFull,isOpenedCheck);
-            contract.setCurrentCount(currentCount);
-
-            if (!isClosedFull && isOpenedCheck){
-                tempContractMap.put(codeContract,contract);
-            }else {
-                bootContractList.add(contract);
-            }
-            countLines++;
-//            System.out.println("считали строку номер " + countLines);
-        }
     }
 
 
@@ -296,13 +228,13 @@ public class Run extends RateInstrumentHandler{
             //если уже открыт контракт и мы наращиваем еще открытую позицию на продажу или покупку
             else if (tempContractMap.containsKey(codeContract)
                     && tempContractMap.get(codeContract).getBuySell().equals(buySell) &&
-                    !tempContractMap.get(codeContract).getClosedFull()){
+                    !tempContractMap.get(codeContract).isClosedFull()){
                 addPositionReport(price,countContract,time,codeContract,yields);
             }
             //если уже открыт контракт и идет встречная сделка на закрытие
             else if (tempContractMap.containsKey(codeContract)
                     && !tempContractMap.get(codeContract).getBuySell().equals(buySell) &&
-                    !tempContractMap.get(codeContract).getClosedFull()){
+                    !tempContractMap.get(codeContract).isClosedFull()){
                 //полное закрытие, когда открытых контрактов = приходящих контрактов
                 if (tempContractMap.containsKey(codeContract) &&
                         tempContractMap.get(codeContract).getCurrentCount() == countContract){
@@ -338,7 +270,7 @@ public class Run extends RateInstrumentHandler{
             //=====если в карте коэфф по коду контракта нет, то загрузить, оптимизация лучше,зачем каждый раз загружать
             //=====коэффициенты с Московской биржи, если из фала только контракты с фиксированным коэффициентом
             if (!rateInstrument.containsKey(codeContract.substring(0,2))){
-                rateInstrument.putAll(addRateInstrument(codeContract.substring(0,2)));
+                rateInstrument.putAll(RateInstrumentHandler.addRateInstrument(codeContract.substring(0,2)));
             }
             //=========================================================================================================
 
@@ -368,13 +300,13 @@ public class Run extends RateInstrumentHandler{
             //если уже открыт контракт и мы наращиваем еще открытую позицию на продажу или покупку
             else if (tempContractMap.containsKey(codeContract)
                     && tempContractMap.get(codeContract).getBuySell().equals(buySell) &&
-                    !tempContractMap.get(codeContract).getClosedFull()){
+                    !tempContractMap.get(codeContract).isClosedFull()){
                 addPositionDDE(price,countContract,s,codeContract);
             }
             //если уже открыт контракт и идет встречная сделка на закрытие
             else if (tempContractMap.containsKey(codeContract)
                     && !tempContractMap.get(codeContract).getBuySell().equals(buySell) &&
-                    !tempContractMap.get(codeContract).getClosedFull()){
+                    !tempContractMap.get(codeContract).isClosedFull()){
                 //полное закрытие, когда открытых контрактов = приходящих контрактов
                 if (tempContractMap.containsKey(codeContract) &&
                         tempContractMap.get(codeContract).getCurrentCount() == countContract){
@@ -493,26 +425,6 @@ public class Run extends RateInstrumentHandler{
             return "null";
         }
 
-    }
-
-    private static int convertMonth(String s){
-        int month;
-        switch (s){
-            case "Dec":month = 12;break;
-            case "Nov":month = 11;break;
-            case "Oct":month = 10;break;
-            case "Sep":month = 9;break;
-            case "Aug":month = 8;break;
-            case "Jul":month = 7;break;
-            case "Jun":month = 6;break;
-            case "May":month = 5;break;
-            case "Apr":month = 4;break;
-            case "Mar":month = 3;break;
-            case "Feb":month = 2;break;
-            case "Jan":month = 1;break;
-            default:month = 0;break;
-        }
-        return month;
     }
 
 //    private static String signIdealDeal(TextField codeContractText, String codeContact){
@@ -701,78 +613,8 @@ public class Run extends RateInstrumentHandler{
         return String.format("%d:%s:%s",hour,str[1],str[2]);
     }
 
-    private static void yieldsForPeriodOPENDATE(int yearIn) throws IOException, ParseException {
-        readInFileData(bootContractList,tempContractMap,pathFileBoot);
-        float yields = 0;
-        for (Contract contract : bootContractList) {//Mon Jan 16 14:54:14 MSK 21
-            String line = contract.getOpenDate().getTime().toString();
-            String[] parseStr = line.split("\\s");
-            int yearLong = Integer.parseInt(parseStr[5]) + 2000;
-            int yearShort = Integer.parseInt(parseStr[5]);
-            if (yearShort == yearIn || yearLong == yearIn){
-                yields = yields + contract.getTotalNet();
-            }
-        }
-        System.out.printf("Yields for period %d year  = %.2f RUB\n",yearIn,yields);
-    }
-
-    private static void yieldsForPeriodOPENDATE(int yearIn, int monthIn) throws IOException, ParseException {
-        readInFileData(bootContractList,tempContractMap,pathFileBoot);
-        float yields = 0;
-        for (Contract contract : bootContractList) {//Mon Jan 16 14:54:14 MSK 2021
-            String line = contract.getOpenDate().getTime().toString();
-            String[] parseStr = line.split("\\s");
-            int month = convertMonth(parseStr[1]);
-            int yearLong = Integer.parseInt(parseStr[5]) + 2000;
-            int yearShort = Integer.parseInt(parseStr[5]);
-            if (yearShort == yearIn && month == monthIn || yearLong == yearIn && month == monthIn){
-                yields = yields + contract.getTotalNet();
-            }
-        }
-        System.out.printf("Yields for period %d year and %d month = %.2f RUB\n",yearIn,monthIn,yields);
-    }
-
-    private static void yieldsForPeriodOPENDATE(String codeContract,int yearIn, int monthIn) throws IOException, ParseException {
-        readInFileData(bootContractList,tempContractMap,pathFileBoot);
-        float yields = 0;
-        for (Contract contract : bootContractList) {//Mon Jan 16 14:54:14 MSK 2021
-            String code = contract.getCodeContract().substring(0,contract.getCodeContract().length() - 2).toUpperCase();
-            String line = contract.getOpenDate().getTime().toString();
-            String[] parseStr = line.split("\\s");
-            int month = convertMonth(parseStr[1]);
-            int yearLong = Integer.parseInt(parseStr[5]) + 2000;
-            int yearShort = Integer.parseInt(parseStr[5]);
-            if (yearShort == yearIn && month == monthIn && code.equals(codeContract.toUpperCase())
-                    || yearLong == yearIn && month == monthIn && code.equals(codeContract.toUpperCase())){
-                yields = yields + contract.getTotalNet();
-            }
-        }
-        System.out.printf("Yields for period %d year and %d month.Contract Code %s = %.2f RUB\n",
-                yearIn,monthIn,codeContract,yields);
-    }
-
-    private static void yieldsForPeriodOPENDATE(int yearIn, String... codeContract) throws IOException, ParseException {
-        for (String s : codeContract) {
-            readInFileData(bootContractList,tempContractMap,pathFileBoot);
-            float yields = 0;
-            for (Contract contract : bootContractList) {//Mon Jan 16 14:54:14 MSK 2021
-                String code = contract.getCodeContract().substring(0,contract.getCodeContract().length() - 2).toUpperCase();
-                String line = contract.getOpenDate().getTime().toString();
-                String[] parseStr = line.split("\\s");
-                int yearLong = Integer.parseInt(parseStr[5]) + 2000;
-                int yearShort = Integer.parseInt(parseStr[5]);
-                if (yearShort == yearIn && code.equals(s.toUpperCase())
-                        || yearLong == yearIn && code.equals(s.toUpperCase())){
-                    yields = yields + contract.getTotalNet();
-                }
-            }
-            System.out.printf("Yields for period %d year.Contract Code %s = %.2f RUB\n",
-                    yearIn,s,yields);
-        }
-    }
-
     private static void yieldsIdealDeal() throws IOException, ParseException {
-        readInFileData(bootContractList,tempContractMap,pathFileBoot);
+        ReadInFileData.readInFileData(bootContractList,tempContractMap,pathFileBoot);
         List<Integer> list = new ArrayList<>();
         float yields = 0;
         int countFail = 0;
@@ -821,7 +663,7 @@ public class Run extends RateInstrumentHandler{
     private static void loadDealsFromDDEServer(String timeAfter,String codeContractForIdealDeal,boolean isZeroYield)
             throws IOException, ParseException {
         isZeroYield = false;
-        readInFileData(bootContractList,tempContractMap,pathFileBoot);
+        ReadInFileData.readInFileData(bootContractList,tempContractMap,pathFileBoot);
         addContractDDEServer(pathFileDDEServer);
         writeOutFileData(bootContractList,tempContractMap,pathFileBoot,dataContractsIdealDeal(codeContractForIdealDeal),
                 timeAfter,isZeroYield);
