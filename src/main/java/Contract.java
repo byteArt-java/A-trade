@@ -1,4 +1,4 @@
-package main.java;
+import lombok.Data;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -1,4 +1,3 @@
-package main.java;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,9 +44,9 @@ public class Run extends RateInstrumentHandler{
     }//main
 
     //в конце программы запись всех закрытых и незакрытых сделок в файл
-    private static void writeOutFileData(List<Contract> bootContractList,Map<String, Contract> tempContractMap,
+    private static void writeOutFileData(List<Contract> bootContractList, Map<String, Contract> tempContractMap,
                                          String pathFileBoot, Map<String,String> dataContracts,
-                                         String timeAfter,boolean isZeroYield) throws IOException, ParseException {
+                                         String timeAfter, boolean isZeroYield) throws IOException, ParseException {
         BufferedWriter fileWriter = new BufferedWriter(new FileWriter(pathFileBoot));
         for (Contract contract : bootContractList) {
             contract.setCurrentCount(0);
@@ -97,7 +96,7 @@ public class Run extends RateInstrumentHandler{
     }
 
     //при запуске программы чтение файла, чтобы закинуть в List, уже старые закрытые сделки, записанные до этого программой
-    private static void readInFileData(List<Contract> bootContractList,Map<String, Contract> tempContractMap, String pathFileBoot) throws IOException, ParseException {
+    private static void readInFileData(List<Contract> bootContractList, Map<String, Contract> tempContractMap, String pathFileBoot) throws IOException, ParseException {
         //  0    1   2   3   4     5     6   7   8     9       10  11  12  13   14     15  16   17  18   19   20
         //SRH2 ,oD= Sat Dec 20 14:17:41 MSK 21 ,oP= 29407.959 ,cD= Sat Dec 20 14:17:41 MSK 21 ,lCP= 0.0 ,aCP= 0.0
         //  21   22   23   24  25  26  27   28      29  30   31    32     33     34

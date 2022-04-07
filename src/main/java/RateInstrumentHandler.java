@@ -1,8 +1,8 @@
-package main.java;
 
 import java.util.HashMap;
 import java.util.Map;
 
+//Этот класс отвечает за правильный расчет коэффициентов которые умножаются на полученную прибыль
 public class RateInstrumentHandler {
 
     protected static Map<String,Float> addRateInstrument(String codeContract){

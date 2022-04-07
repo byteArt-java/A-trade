@@ -1,19 +1,14 @@
-package main.java;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class QueryDataCoefficient {
     public static Map<String,String> link = new HashMap<>();
+
 
     public static float getCoefficient(String codeContractShort){
         addLink();
@@ -30,19 +25,28 @@ public class QueryDataCoefficient {
 
         //=====находим строку Стоимость шага цены, меняем ее на sK$,чтобы было проще разбирать.И находим ставку по инстр
         StringBuilder sb = new StringBuilder();
-        String newLineForRate = htmlTables.replace("Стоимость шага цены","sK$");
-        for (int i = 0; i < newLineForRate.length() - 3; i++) {
-            if (newLineForRate.charAt(i) == 's' && newLineForRate.charAt(i + 1) == 'K' &&
-                    newLineForRate.charAt(i + 2) == '$'){
-                String numberRate = newLineForRate.substring(i,i + 70);
-                for (int j = 0; j < numberRate.length(); j++) {
-                    if (Character.isDigit(numberRate.charAt(j))){
-                        sb.append(numberRate.charAt(j));
-                    }else if (numberRate.charAt(j) == ','){
-                        sb.append(".");
-                    }
-                }
-                break;
+        String newLineForRateStart = htmlTables.replace("Стоимость шага цены","sK$");
+        String newLineForRateEnd = newLineForRateStart.replace("Нижний лимит","eK$");
+
+        int start = 0;
+        int end = 0;
+        String numberRate = "";
+        for (int i = 0; i < newLineForRateEnd.length() - 3; i++) {
+            if (newLineForRateEnd.charAt(i) == 's' && newLineForRateEnd.charAt(i + 1) == 'K' &&
+                    newLineForRateEnd.charAt(i + 2) == '$'){
+                start = i;
+            }else if (newLineForRateEnd.charAt(i) == 'e' && newLineForRateEnd.charAt(i + 1) == 'K' &&
+                    newLineForRateEnd.charAt(i + 2) == '$'){
+                end = i;
+            }
+        }
+        numberRate = newLineForRateEnd.substring(start,end);//строка между sK$ и eK$
+
+        for (int j = 0; j < numberRate.length(); j++) {
+            if (Character.isDigit(numberRate.charAt(j))){
+                sb.append(numberRate.charAt(j));
+            }else if (numberRate.charAt(j) == ','){
+                sb.append(".");
             }
         }
         //==============================================================================================================
