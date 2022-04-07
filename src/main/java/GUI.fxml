@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.Controller">
+   <children>
+      <Pane fx:id="mainPane" layoutX="10.0" layoutY="10.0" prefHeight="1000.0" prefWidth="1920.0">
+         <children>
+            <TextField fx:id="bootAddress" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="287.0" promptText="Укажите путь к файлу в формате txt" />
+            <Button fx:id="bootButton" defaultButton="true" layoutX="301.0" layoutY="14.0" mnemonicParsing="false" onAction="#bootDeals" prefHeight="25.0" prefWidth="85.0" text="Boot" />
+            <RadioButton fx:id="radioDDEServer" layoutX="400.0" layoutY="18.0" mnemonicParsing="false" text="Quik DDE Server" textFill="#d71313">
+               <toggleGroup>
+                  <ToggleGroup fx:id="radioGroup" />
+               </toggleGroup></RadioButton>
+            <RadioButton fx:id="radioReport" layoutX="523.0" layoutY="18.0" mnemonicParsing="false" text="Report Broker" textFill="#d71c1c" toggleGroup="$radioGroup" />
+            <Separator layoutX="620.0" orientation="VERTICAL" prefHeight="1000.0" prefWidth="6.0" />
+            <Button fx:id="buttonShowAllDeals" defaultButton="true" layoutX="626.0" layoutY="14.0" mnemonicParsing="false" onAction="#showAllDeals" prefHeight="25.0" prefWidth="155.0" text="Show All Deals" />
+            <Separator layoutX="624.0" layoutY="45.0" prefHeight="3.0" prefWidth="166.0" />
+            <Separator layoutX="789.0" layoutY="3.0" orientation="VERTICAL" prefHeight="173.0" prefWidth="6.0" />
+            <TextArea fx:id="lastOperation" layoutX="14.0" layoutY="79.0" prefHeight="918.0" prefWidth="602.0" promptText="последние операции по загрузке" />
+            <Label layoutX="631.0" layoutY="50.0" prefHeight="17.0" prefWidth="155.0" text="средняя прибыль в месяц" />
+            <Separator layoutX="624.0" layoutY="106.0" prefHeight="3.0" prefWidth="166.0" />
+            <Label fx:id="labelAverageYields" layoutX="633.0" layoutY="70.0" prefHeight="32.0" prefWidth="145.0" />
+            <TextArea fx:id="textAreaNasdaq" layoutX="1783.0" layoutY="14.0" prefHeight="37.0" prefWidth="123.0" />
+            <Label layoutX="1634.0" layoutY="14.0" prefHeight="36.0" prefWidth="144.0" text="до открытия Nasdaq USA" />
+            <Label layoutX="1634.0" layoutY="57.0" prefHeight="36.0" prefWidth="141.0" text="до открытия NYSE USA" />
+            <TextArea fx:id="textAreaNYSE" layoutX="1783.0" layoutY="56.0" prefHeight="37.0" prefWidth="123.0" />
+            <Label layoutX="1634.0" layoutY="101.0" prefHeight="36.0" prefWidth="142.0" text="до открытия JPX Japan" />
+            <TextArea fx:id="textAreaJPX" layoutX="1783.0" layoutY="100.0" prefHeight="37.0" prefWidth="123.0" />
+            <Label layoutX="1634.0" layoutY="150.0" prefHeight="36.0" prefWidth="140.0" text="до открытия LSE London" />
+            <TextArea fx:id="textAreaLSE" layoutX="1783.0" layoutY="149.0" prefHeight="37.0" prefWidth="123.0" />
+            <Label layoutX="1635.0" layoutY="196.0" prefHeight="36.0" prefWidth="144.0" text="до открытия MOEX Russia" />
+            <TextArea fx:id="textAreaMOEX" layoutX="1783.0" layoutY="195.0" prefHeight="37.0" prefWidth="123.0" />
+            <Separator layoutX="1628.0" layoutY="243.0" prefHeight="3.0" prefWidth="279.0" />
+            <Separator layoutX="1625.0" layoutY="-1.0" orientation="VERTICAL" prefHeight="244.0" prefWidth="6.0" />
+            <Label alignment="CENTER" layoutX="633.0" layoutY="112.0" prefHeight="25.0" prefWidth="145.0" text="Memory RAM" />
+            <Label fx:id="labelMemory" layoutX="633.0" layoutY="141.0" prefHeight="25.0" prefWidth="140.0" />
+            <Separator layoutX="623.0" layoutY="175.0" prefHeight="3.0" prefWidth="166.0" />
+            <TextField layoutX="14.0" layoutY="46.0" prefHeight="25.0" prefWidth="142.0" />
+            <Label layoutX="169.0" layoutY="50.0" prefHeight="17.0" prefWidth="166.0" text="Код контракта idealDeal" />
+            <AreaChart layoutX="795.0" layoutY="18.0" legendSide="LEFT" prefHeight="407.0" prefWidth="602.0" titleSide="BOTTOM">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </AreaChart>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
