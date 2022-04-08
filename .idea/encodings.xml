@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/Fuctionality.txt" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Controller.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/Contract.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/ConvertMonthToInt.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/IdealDeal.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/QueryDataCoefficient.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/RateInstrumentHandler.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/ReadInFileData.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/ResourcesStatic.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/Run.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/TimeRangeForIdealDeal.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/YieldsPeriod.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/YieldsStrategyIdealDeal.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/RunGUI.java" charset="UTF-16" />
+  </component>
+</project>
