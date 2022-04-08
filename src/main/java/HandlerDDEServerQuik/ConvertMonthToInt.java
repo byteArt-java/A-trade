@@ -1,4 +1,4 @@
-package TxtHandler;
+package HandlerDDEServerQuik;
 
 public class ConvertMonthToInt {
     public static int convertMonth(String s){

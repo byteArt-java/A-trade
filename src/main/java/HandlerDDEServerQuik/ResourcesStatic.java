@@ -1,4 +1,4 @@
-package TxtHandler;
+package HandlerDDEServerQuik;
 
 import java.util.ArrayList;
 import java.util.HashMap;

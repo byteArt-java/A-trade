@@ -1,4 +1,4 @@
-package TxtHandler;
+package HandlerDDEServerQuik;
 
 import java.io.*;
 import java.text.ParseException;
@@ -15,29 +15,33 @@ public class Run extends ResourcesStatic{
         // ƒата указана дл€ того, чтобы помечать сделки проведенные по —тратегии(»деальна€ сделка)
         loadDealsFromDDEServer("09.03.2022 07:00:00","SI",isZeroYield);
 
-        addContractReportBroker(pathFileReportBroker);//загрузка сделок из Ѕрокерского отчета
+//        addContractReportBroker(pathFileReportBroker);//загрузка сделок из Ѕрокерского отчета
+////
+//        yieldsIdealDeal();//доходность по стратегии идеальной сделки
+////
+//        YieldsPeriod.yieldsForPeriodOPENDATE(2022);//доходность за определенный период
+//        YieldsPeriod.yieldsForPeriodOPENDATE(2022,2);//доходность за определенный период
+//        YieldsPeriod.yieldsForPeriodOPENDATE("ED",2021,11);//доходность за определенный период
+//        YieldsPeriod.yieldsForPeriodOPENDATE(2022,"SI","RI","BR","GD","ED");//доходность за определенный период
 //
-        yieldsIdealDeal();//доходность по стратегии идеальной сделки
-//
-        YieldsPeriod.yieldsForPeriodOPENDATE(2022);//доходность за определенный период
-        YieldsPeriod.yieldsForPeriodOPENDATE(2022,2);//доходность за определенный период
-        YieldsPeriod.yieldsForPeriodOPENDATE("ED",2021,11);//доходность за определенный период
-        YieldsPeriod.yieldsForPeriodOPENDATE(2022,"SI","RI","BR","GD","ED");//доходность за определенный период
-
         analyzeAverageDaysBetweenIdealDeal(pathFileIdealDeal);//среднее врем€ между идеальными сделками
-
-        analyzeIdealDealBetweenStopFixAndFloatingStop("F://‘ондовый рынок/A-Trade//idealDeal.txt",40,
-                140);//анализ прибыльности при различных параметрах стопа по идеальной стратегии
+//
+//        analyzeIdealDealBetweenStopFixAndFloatingStop("F://‘ондовый рынок/A-Trade//idealDeal.txt",40,
+//                140);//анализ прибыльности при различных параметрах стопа по идеальной стратегии
 
         long past = System.currentTimeMillis();
         System.out.println("ѕрошло миллисекунд  = " + (past - start));
     }//main
 
+
+//    writeOutFileData(bootContractList,tempContractMap,pathFileBoot,
+//                     TimeRangeForIdealDeal.dataContractsIdealDeal(codeContractForIdealDeal), timeAfter,isZeroYield);
     //в конце программы запись всех закрытых и незакрытых сделок в файл
     private static void writeOutFileData(List<Contract> bootContractList, Map<String, Contract> tempContractMap,
                                          String pathFileBoot, Map<String,String> dataContracts,
                                          String timeAfter, boolean isZeroYield) throws IOException, ParseException {
         BufferedWriter fileWriter = new BufferedWriter(new FileWriter(pathFileBoot));
+        //запись в файл закрытых сделок
         for (Contract contract : bootContractList) {
             contract.setCurrentCount(0);
             if (dataContracts.containsKey(contract.getCodeContract())){
@@ -66,14 +70,13 @@ public class Run extends ResourcesStatic{
                 Date dateAfter = sdfAfter.parse(sAfter);
 
                 if (dateBefore.getTime() < dateContract.getTime() && dateAfter.getTime() > dateContract.getTime() &&
-                dateContract.getTime() > dateAfterCorrelation.getTime()){
+                dateContract.getTime() > dateAfterCorrelation.getTime() && !contract.getStyleDeal().equals("idealDeal")){
                     contract.setStyleDeal("idealDeal");
-                }else {
-                    contract.setStyleDeal("hour");
                 }
             }
             fileWriter.write(contract.writeBootFromJavaDeals());
         }
+        //запись в файл незакрытых сделок
         for (Contract value : tempContractMap.values()) {
             if (isZeroYield){
                 value.setTotalNet(0);//это чтобы правильно считал прибыль, тк addContractDDEServer,учитывает прибыль от цены
@@ -613,59 +616,12 @@ public class Run extends ResourcesStatic{
         return String.format("%d:%s:%s",hour,str[1],str[2]);
     }
 
-    private static void yieldsIdealDeal() throws IOException, ParseException {
-        ReadInFileData.readInFileData(bootContractList,tempContractMap,pathFileBoot);
-        List<Integer> list = new ArrayList<>();
-        float yields = 0;
-        int countFail = 0;
-        for (Contract contract : bootContractList) {//Mon Jan 16 14:54:14 MSK 21
-            if (contract.getStyleDeal().equals("idealDeal")){
-                if (contract.getTotalNet() < 0){
-                    countFail++;
-                }else {
-                    list.add(countFail);
-                    countFail = 0;
-                }
-                yields = yields + contract.getTotalNet();
-            }
-        }
-        list.add(countFail);
-        int maxFails = list.stream().max(Comparator.comparing(Integer::intValue)).get();
-        int minFails = list.stream().min(Comparator.comparing(Integer::intValue)).get();
-        System.out.println(yields + " yieldsIdealDeal");
-        System.out.println("ћаксимальное количество неудачных попыток входов в идельную сделку = " + maxFails);
-        System.out.println("ћинимальное количество неудачных попыток входов в идельную сделку = " + minFails);
-    }
-
-    //===здесь описаны временные промежутки. ≈сли контракт совпадает и попадает во временной промежуток карт ниже,
-    //то сделка помечаетс€ как проведенна€ по —тратегии(»деальна€ сделка)
-    private static Map<String,String> dataContractsIdealDeal(String codeContractShort){
-        Map<String,String> map = new HashMap<>();
-        if (codeContractShort.startsWith("RI")){
-            for (int i = 2; i < 9; i++) {
-                map.put("RIH" + i,"Dec 15 11:59:01 MSK 202" + i + " - Mar 17 11:59:00 MSK 202" + i);
-                map.put("RIM" + i,"Mar 17 11:59:01 MSK 202" + i + " - Jun 16 11:59:00 MSK 202" + i);
-                map.put("RIU" + i,"Jun 16 11:59:01 MSK 202" + i + " - Sep 15 11:59:00 MSK 202" + i);
-                map.put("RIZ" + i,"Sep 15 11:59:01 MSK 202" + i + " - Dec 15 11:59:00 MSK 202" + i);
-            }
-        }else if (codeContractShort.startsWith("SI")){
-            for (int i = 2; i < 9; i++) {
-                map.put("SIH" + i,"Dec 15 11:59:01 MSK 202" + i + " - Mar 17 11:59:00 MSK 202" + i);
-                map.put("SIM" + i,"Mar 17 11:59:01 MSK 202" + i + " - Jun 16 11:59:00 MSK 202" + i);
-                map.put("SIU" + i,"Jun 16 11:59:01 MSK 202" + i + " - Sep 15 11:59:00 MSK 202" + i);
-                map.put("SIZ" + i,"Sep 15 11:59:01 MSK 202" + i + " - Dec 15 11:59:00 MSK 202" + i);
-            }
-        }
-
-        return map;
-    }
-
     private static void loadDealsFromDDEServer(String timeAfter,String codeContractForIdealDeal,boolean isZeroYield)
             throws IOException, ParseException {
         isZeroYield = false;
         ReadInFileData.readInFileData(bootContractList,tempContractMap,pathFileBoot);
         addContractDDEServer(pathFileDDEServer);
-        writeOutFileData(bootContractList,tempContractMap,pathFileBoot,dataContractsIdealDeal(codeContractForIdealDeal),
-                timeAfter,isZeroYield);
+        writeOutFileData(bootContractList,tempContractMap,pathFileBoot,
+                TimeRangeForIdealDeal.dataContractsIdealDeal(codeContractForIdealDeal), timeAfter,isZeroYield);
     }
 }

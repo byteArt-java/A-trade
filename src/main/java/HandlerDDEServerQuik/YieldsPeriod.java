@@ -1,8 +1,4 @@
-package TxtHandler;
-
-import TxtHandler.Contract;
-import TxtHandler.ReadInFileData;
-import TxtHandler.ResourcesStatic;
+package HandlerDDEServerQuik;
 
 import java.io.IOException;
 import java.text.ParseException;
