@@ -14,11 +14,9 @@
     <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/YieldsPeriod.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/main/java/HandlerDDEServerQuik/YieldsStrategyIdealDeal.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/main/java/ImageParameter.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/main/java/TestingIdealDealDesk/Controller.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/main/java/TestingIdealDealDesk/ArrayNoRandom.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/main/java/TestingIdealDealDesk/Controller.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/main/java/TestingIdealDealDesk/ImageAdapter.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/main/java/TestingIdealDealDesk/ImageAdapter.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/main/java/TestingIdealDealDesk/RunGUI.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/main/java/TestingIdealDealDesk/RunGUI.java" charset="UTF-16" />
   </component>
 </project>
